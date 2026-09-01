@@ -177,6 +177,8 @@ public partial class SettingsViewModel : INotifyPropertyChanged,
 
     public bool CanConfigureQuickAccessShelf => CompactMode && ShowQuickAccessShelf;
 
+    public double MaxQuickAccessShelfPinnedCommandLimit => SettingsModel.MaxQuickAccessShelfPinnedCommandLimit;
+
     public int ListItemAltNumberBehaviorIndex
     {
         get => (int)_settingsService.Settings.ListItemAltNumberBehavior;
@@ -218,6 +220,10 @@ public partial class SettingsViewModel : INotifyPropertyChanged,
             _settingsService.UpdateSettings(s => s with { RecentCommandsOnHome = (RecentCommandsPlacement)value });
         }
     }
+
+    public double MinRecentCommandsDisplayLimit => SettingsModel.MinRecentCommandsDisplayLimit;
+
+    public double MaxRecentCommandsDisplayLimit => SettingsModel.MaxRecentCommandsDisplayLimit;
 
     public double RecentCommandsDisplayLimit
     {
