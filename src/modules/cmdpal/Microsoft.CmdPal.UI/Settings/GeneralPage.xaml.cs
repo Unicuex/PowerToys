@@ -18,7 +18,7 @@ using Windows.Win32.UI.Shell;
 
 namespace Microsoft.CmdPal.UI.Settings;
 
-public sealed partial class GeneralPage : Page, INotifyPropertyChanged
+public sealed partial class GeneralPage : Page, INotifyPropertyChanged, IDisposable
 {
     internal const string RecentItemsSettingsElementTag = "RecentItems";
 
@@ -57,7 +57,6 @@ public sealed partial class GeneralPage : Page, INotifyPropertyChanged
         _notificationStateTimer.Tick += NotificationStateTimer_Tick;
 
         Loaded += GeneralPage_Loaded;
-        Unloaded += GeneralPage_Unloaded;
     }
 
     public bool HasExternalCommandPermissions
@@ -134,12 +133,15 @@ public sealed partial class GeneralPage : Page, INotifyPropertyChanged
         NavigateToPendingSettingsElement();
     }
 
-    private void GeneralPage_Unloaded(object sender, RoutedEventArgs e)
+    public void Dispose()
     {
         _isPageLoaded = false;
+        Loaded -= GeneralPage_Loaded;
         _notificationStateTimer.Stop();
+        _notificationStateTimer.Tick -= NotificationStateTimer_Tick;
         _settingsService.SettingsChanged -= SettingsService_SettingsChanged;
         _externalCommandPermissionStore.PermissionsChanged -= ExternalCommandPermissionStore_PermissionsChanged;
+        viewModel?.Dispose();
     }
 
     private void ExternalCommandPermissionStore_PermissionsChanged(object? sender, EventArgs e) =>
